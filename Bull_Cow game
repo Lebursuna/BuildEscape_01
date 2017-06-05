@@ -1,0 +1,81 @@
+// BullCow_2.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include <iostream>
+#include <cstdlib>
+#include <fstream>
+#include <string>
+#include <ctime>
+using std::cout;
+using std::endl;
+using std::string;
+using std::ifstream;
+using std::cin;
+//using int32 = int;
+string array[101];
+int dictLength = 0;
+int Bull, Cow;
+void checkBullCow(string, string);
+string checkIsogram(int);
+
+int main()
+{
+
+		ifstream fin("Dictionary.txt");
+		while (fin) { fin >> array[dictLength]; dictLength++; }
+		srand(time(NULL));
+		int k = rand() % (dictLength + 1);
+		string word = checkIsogram(k);
+		cout << word << endl;
+		string thinkWord;
+		cout << "Think the word isogram which letters is " << word.length() << "  you have 10 try:  ";
+		cin >> thinkWord;
+		for (int i = 1; i <= 10; i++) {
+			checkBullCow(word, thinkWord);
+			if (Bull == word.length()) { cout << "You are winner... think word was " << word << endl; break; }
+			else {
+				cout << "Right letters in right place, Bull: " << Bull << endl << "Right letters in wrong place, Cow: " << Cow << endl
+					<< "Try " << (i + 1) << " enter the word: "; cin >> thinkWord;
+			}
+		}
+		cout << endl;
+		system("pause");
+		return 0;
+	}
+  
+
+string checkIsogram(int x) {
+
+	string word = array[x];
+	int counter = 0;
+	for (int i = 0; i<word.length(); i++) {
+		//cout<<"i= "<<word[i]<<endl;
+		for (int j = i + 1; j<word.length(); j++) {
+			//cout<<"j= "<<word[j]<<endl;
+			if (word[i] == word[j]) { counter++; break; }
+		}
+		if (counter != 0) break;
+	}
+	if (counter == 0) { return word; }
+	else {
+		int h;
+		for (; ; ) {
+			srand(time(NULL));
+			h = rand() % dictLength + 0;
+			if (h != x) break;
+		}
+		word = checkIsogram(h);
+	}
+	//return;
+}
+
+void checkBullCow(string Word, string thWord) {
+	Bull = 0, Cow = 0;
+	for (int i = 0; i<Word.length(); i++) {
+		if (Word[i] == thWord[i]) { Bull++; continue; }
+		for (int j = i + 1; j<Word.length(); j++) {
+			if (Word[i] == thWord[j]) { Cow++; continue; }
+		}
+	}
+}
